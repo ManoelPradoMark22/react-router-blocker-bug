@@ -7,3 +7,5 @@ npm run dev
  - click in "DOWNLOAD CSV"
  - note that the shouldBlockFn is triggered - and the only way to download the CSV is clicking in "Leave", which is not at all intuitive for the user
 
+ ![evidence](./public/evidence.png)
+
