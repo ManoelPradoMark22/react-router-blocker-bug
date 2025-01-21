@@ -26,6 +26,7 @@ function RootComponent() {
         next.params.id === '123' &&
         next.search.hello === 'world'
       ) {
+        console.log("--BLOCKED--")
         return true
       }
       return false
