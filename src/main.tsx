@@ -10,6 +10,7 @@ import {
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import './App.css'; 
 
 const rootRoute = createRootRoute({
   component: RootComponent,
@@ -148,6 +149,7 @@ function Editor1Component() {
     withResolver: true,
   })
 
+  //The error occurs here (downloadable url)
   const handleDownload = (url: string) => {
     const link = document.createElement("a");
     link.href = url;
@@ -155,6 +157,38 @@ function Editor1Component() {
     link.click();
     document.body.removeChild(link);
   };
+
+  //but not here (generated csv)
+  const handleGenerateCsvAndDownload = async () => {
+    const csvFinal = ["Name, Nickname, Address 1, City, State, Number",
+      "John,Doe,120 jefferson st.,Riverside, NJ, 08075",
+      "Jack,McGinnis,220 hobo Av.,Phila, PA,09119",
+      "John 'Da Man',Repici,120 Jefferson St.,Riverside, NJ,08075",
+      "Stephen,Tyler,'7452 Terrace ''At the Plaza'' road',SomeTown,SD, 91234",
+      ",Blankman,,SomeTown, SD, 00298",
+      "Joan 'the bone', Anne,Jet,'9th, at Terrace plc',Desert City,CO,00123"
+      ].join("\n");
+    
+    // Add UTF-8 BOM
+    const BOM = '\uFEFF';
+    const csvWithBOM = BOM + csvFinal;
+    
+    // Specify UTF-8 encoding in the Blob
+    const blob = new Blob([csvWithBOM], { 
+      type: "text/csv;charset=utf-8" 
+    });
+    
+    const url = await window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", 'generated_agenda');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Clean up the URL object
+    window.URL.revokeObjectURL(url);
+  }
 
   return (
     <div className="flex flex-col p-2">
@@ -167,7 +201,18 @@ function Editor1Component() {
         />
       </div>
       <hr className="m-2" />
-      <button onClick={() => handleDownload('https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv')}>DOWNLOAD CSV</button>
+
+      <div className="app-container">
+      <button className="styled-button" onClick={() => handleDownload('https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv')}>
+        DOWNLOAD CSV
+        <span className="tooltip-text">FILL THE INPUT 1 AND CLICK HERE TO TRIGGER THE ERROR (downloadable url)</span>
+      </button>
+      <button className="styled-button" onClick={handleGenerateCsvAndDownload}>
+        GENERATE CSV AND DOWNLOAD
+        <span className="tooltip-text">THIS ONE DOES NOT TRIGGER THE ERROR (generated csv)</span>
+      </button>
+    </div>
+
       <Link to="/react-router-blocker-bug/editor-1/editor-2">Go to Editor 2</Link>
       <Outlet />
 
