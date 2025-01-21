@@ -20,8 +20,8 @@ function RootComponent() {
   const { proceed, reset, status } = useBlocker({
     shouldBlockFn: ({ current, next }) => {
       if (
-        current.routeId === '/editor-1' &&
-        next.fullPath === '/foo/$id' &&
+        current.routeId === '/react-router-blocker-bug/editor-1' &&
+        next.fullPath === '/react-router-blocker-bug/foo/$id' &&
         next.params.id === '123' &&
         next.search.hello === 'world'
       ) {
@@ -37,7 +37,7 @@ function RootComponent() {
     <>
       <div className="p-2 flex gap-2 text-lg">
         <Link
-          to="/"
+          to="/react-router-blocker-bug"
           activeProps={{
             className: 'font-bold',
           }}
@@ -46,7 +46,7 @@ function RootComponent() {
           Home
         </Link>{' '}
         <Link
-          to="/editor-1"
+          to="/react-router-blocker-bug/editor-1"
           activeProps={{
             className: 'font-bold',
           }}
@@ -54,7 +54,7 @@ function RootComponent() {
           Editor 1
         </Link>{' '}
         <Link
-          to={'/editor-1/editor-2'}
+          to={'/react-router-blocker-bug/editor-1/editor-2'}
           activeProps={{
             className: 'font-bold',
           }}
@@ -62,7 +62,7 @@ function RootComponent() {
           Editor 2
         </Link>{' '}
         <Link
-          to="/foo/$id"
+          to="/react-router-blocker-bug/foo/$id"
           params={{ id: '123' }}
           search={{ hello: 'world' }}
           activeProps={{
@@ -73,7 +73,7 @@ function RootComponent() {
           foo 123
         </Link>{' '}
         <Link
-          to="/foo/$id"
+          to="/react-router-blocker-bug/foo/$id"
           params={{ id: '456' }}
           search={{ hello: 'universe' }}
           activeProps={{
@@ -113,7 +113,7 @@ function RootComponent() {
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
+  path: 'react-router-blocker-bug',
   component: IndexComponent,
 })
 
@@ -127,14 +127,14 @@ function IndexComponent() {
 
 const fooRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'foo/$id',
+  path: 'react-router-blocker-bug/foo/$id',
   validateSearch: (search) => ({ hello: search.hello }) as { hello: string },
   component: () => <>foo {fooRoute.useParams().id}</>,
 })
 
 const editor1Route = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'editor-1',
+  path: 'react-router-blocker-bug/editor-1',
   component: Editor1Component,
 })
 
@@ -168,7 +168,7 @@ function Editor1Component() {
       </div>
       <hr className="m-2" />
       <button onClick={() => handleDownload('https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv')}>DOWNLOAD CSV</button>
-      <Link to="/editor-1/editor-2">Go to Editor 2</Link>
+      <Link to="/react-router-blocker-bug/editor-1/editor-2">Go to Editor 2</Link>
       <Outlet />
 
       {status === 'blocked' && (
@@ -197,7 +197,7 @@ function Editor1Component() {
 
 const editor2Route = createRoute({
   getParentRoute: () => editor1Route,
-  path: 'editor-2',
+  path: 'react-router-blocker-bug/editor-2',
   component: Editor2Component,
 })
 
