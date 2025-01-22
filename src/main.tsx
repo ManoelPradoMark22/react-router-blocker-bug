@@ -150,10 +150,11 @@ function Editor1Component() {
     withResolver: true,
   })
 
-  //The error occurs here (downloadable url)
+  //The error occurs here (downloadable url) //fixed with target _blank
   const handleDownload = (url: string) => {
     const link = document.createElement("a");
     link.href = url;
+    link.target = '_blank';//fixed
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
