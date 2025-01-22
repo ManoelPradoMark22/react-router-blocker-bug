@@ -143,18 +143,30 @@ const editor1Route = createRoute({
 function Editor1Component() {
   const [value, setValue] = React.useState('')
 
+  const shouldBlock = value !== '';
+
   // Block leaving editor-1 if there is text in the input
   const { proceed, reset, next, current, status } = useBlocker({
-    shouldBlockFn: () => value !== '',
-    enableBeforeUnload: () => value !== '',
+    shouldBlockFn: () => shouldBlock,
+    enableBeforeUnload: () => shouldBlock,
     withResolver: true,
   })
 
+  type IHandleDownload = {
+    url: string;
+    shouldBlock?: boolean;
+  }
+  
   //The error occurs here (downloadable url) //fixed with target _blank
-  const handleDownload = (url: string) => {
+  const handleDownload = ({
+    url,
+    shouldBlock
+  }: IHandleDownload) => {
     const link = document.createElement("a");
     link.href = url;
-    link.target = '_blank';//fixed
+    if(shouldBlock) {
+      link.target = '_blank';
+    }
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -205,7 +217,13 @@ function Editor1Component() {
       <hr className="m-2" />
 
       <div className="app-container">
-      <button className="styled-button" onClick={() => handleDownload('https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv')}>
+      <button 
+        className="styled-button" 
+        onClick={() => handleDownload({
+          url: 'https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv',
+          shouldBlock
+        })}
+      >
         DOWNLOAD CSV
         <span className="tooltip-text">FILL THE INPUT 1 AND CLICK HERE TO TRIGGER THE ERROR (downloadable url)</span>
       </button>
